@@ -1,4 +1,4 @@
-AC_DEFUN([AX_XCODE_DEVICE_ISYSROOT],
+AC_DEFUN([AX_XCODE_DEVICE],
     [
         DEVELOPER_PATH=$(xcode-select --print-path)
         DEFAULT_DEVICE='iPhoneSimulator'
@@ -39,11 +39,18 @@ AC_DEFUN([AX_XCODE_DEVICE_ISYSROOT],
                         if test "x$SIMULATOR" = "xyes"; then
                             CFLAGS="${CFLAGS} -arch i386 -arch x86_64"
                             CFLAGS="${CFLAGS} -mios-simulator-version-min=${MINVERSION}"
+
+                            OBJCFLAGS="${OBJCFLAGS} -arch i386 -arch x86_64"
+                            OBJCFLAGS="${OBJCFLAGS} -mios-simulator-version-min=${MINVERSION}"
                         else
                             CFLAGS="${CFLAGS} -arch armv7 -arch arm64"
                             CFLAGS="${CFLAGS} -mios-version-min=${MINVERSION}"
+
+                            OBJCFLAGS="${OBJCFLAGS} -arch armv7 -arch arm64"
+                            OBJCFLAGS="${OBJCFLAGS} -mios-version-min=${MINVERSION}"
                         fi
                         CFLAGS="${CFLAGS} -isysroot ${ISYSROOT}"
+                        OBJCFLAGS="${OBJCFLAGS} -isysroot ${ISYSROOT}"
                     ],
                     [AC_MSG_ERROR([specified ${DEVICE} is not valid])]
                 )
