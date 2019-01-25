@@ -37,7 +37,7 @@ AC_DEFUN([AX_XCODE_DEVICE],
                             fi
                         done
                         if test "x$SIMULATOR" = "xyes"; then
-                            if test $MINVERSION -lt 11.0; then
+                            if test "$(echo -e "$MINVERSION\n11.0" | $VSORT -V | tail -n 1)" = "11.0"; then
                                 CFLAGS="${CFLAGS} -arch i386"
                                 OBJCFLAGS="${OBJCFLAGS} -arch i386"
                             fi
@@ -47,7 +47,7 @@ AC_DEFUN([AX_XCODE_DEVICE],
                             OBJCFLAGS="${OBJCFLAGS} -arch x86_64"
                             OBJCFLAGS="${OBJCFLAGS} -mios-simulator-version-min=${MINVERSION}"
                         else
-                            if test $MINVERSION -lt 11.0; then
+                            if test "$(echo -e "$MINVERSION\n11.0" | $VSORT -V | tail -n 1)" = "11.0"; then
                                 CFLAGS="${CFLAGS} -arch armv7"
                                 OBJCFLAGS="${OBJCFLAGS} -arch armv7"
                             fi
