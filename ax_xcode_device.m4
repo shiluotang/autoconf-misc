@@ -1,7 +1,6 @@
 AC_DEFUN([AX_XCODE_DEVICE],
     [
         DEVELOPER_PATH=$(xcode-select --print-path)
-        DEFAULT_DEVICE='iPhoneSimulator'
         SDK_PATH=
         DEVICE=
         SIMULATOR=
@@ -20,10 +19,10 @@ AC_DEFUN([AX_XCODE_DEVICE],
                 AC_CHECK_FILE(
                     [${FOUNDATION}],
                     [
-                        if test "x${DEVICE:(${#DEVICE}-2):2}" = "xOS"; then
-                            SIMULATOR="no"
-                        else
+                        if echo $DEVICE | grep -E 'Simulator$' >& /dev/null; then
                             SIMULATOR="yes"
+                        else
+                            SIMULATOR="no"
                         fi
                         VSORT=sort
                         if ! echo 'a b c' | $VSORT -V >& /dev/null; then
@@ -36,26 +35,27 @@ AC_DEFUN([AX_XCODE_DEVICE],
                                 break
                             fi
                         done
+                        DEVICE_NAME=`echo ${DEVICE} | tr '[[:upper:]]' '[[:lower:]]'`
                         if test "x$SIMULATOR" = "xyes"; then
                             if test "$(echo -e "$MINVERSION\n11.0" | $VSORT -V | tail -n 1)" = "11.0"; then
                                 CFLAGS="${CFLAGS} -arch i386"
                                 OBJCFLAGS="${OBJCFLAGS} -arch i386"
                             fi
                             CFLAGS="${CFLAGS} -arch x86_64"
-                            CFLAGS="${CFLAGS} -mios-simulator-version-min=${MINVERSION}"
+                            CFLAGS="${CFLAGS} -m${DEVICE_NAME}-version-min=${MINVERSION}"
 
                             OBJCFLAGS="${OBJCFLAGS} -arch x86_64"
-                            OBJCFLAGS="${OBJCFLAGS} -mios-simulator-version-min=${MINVERSION}"
+                            OBJCFLAGS="${OBJCFLAGS} -m${DEVICE_NAME}-version-min=${MINVERSION}"
                         else
                             if test "$(echo -e "$MINVERSION\n11.0" | $VSORT -V | tail -n 1)" = "11.0"; then
-                                CFLAGS="${CFLAGS} -arch armv7"
-                                OBJCFLAGS="${OBJCFLAGS} -arch armv7"
+                                CFLAGS="${CFLAGS} -arch $(uname -m)"
+                                OBJCFLAGS="${OBJCFLAGS} -arch $(uname -m)"
                             fi
-                            CFLAGS="${CFLAGS} -arch arm64"
-                            CFLAGS="${CFLAGS} -mios-version-min=${MINVERSION}"
+                            CFLAGS="${CFLAGS} -arch $(uname -m)"
+                            CFLAGS="${CFLAGS} -m${DEVICE_NAME}-version-min=${MINVERSION}"
 
-                            OBJCFLAGS="${OBJCFLAGS} -arch arm64"
-                            OBJCFLAGS="${OBJCFLAGS} -mios-version-min=${MINVERSION}"
+                            OBJCFLAGS="${OBJCFLAGS} -arch $(uname -m)"
+                            OBJCFLAGS="${OBJCFLAGS} -m${DEVICE_NAME}-version-min=${MINVERSION}"
                         fi
                         CFLAGS="${CFLAGS} -isysroot ${ISYSROOT}"
                         OBJCFLAGS="${OBJCFLAGS} -isysroot ${ISYSROOT}"
